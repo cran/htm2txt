@@ -2,20 +2,27 @@
 % Please edit documentation in R/htm2txt.R
 \name{htm2txt}
 \alias{htm2txt}
-\title{Wipe out tags in a html document and return a text in it}
+\title{Convert a html document to a simple plain text by removing all html tags}
 \usage{
-htm2txt(htm)
+htm2txt(htm, merge = TRUE, list = "\\t\\\\* ", pagebreak = "----------")
 }
 \arguments{
-\item{htm}{a string containing a html document.}
+\item{htm}{one or more R objects containing html tags, to be converted into a simple plain text.}
+
+\item{merge}{if TRUE, multiple R objects will be treated like lines in a html document, and will be merged into a string.}
+
+\item{list}{a string (regular expression) replacing a <li> tag which indicates a numbering or bullet for lists.}
+
+\item{pagebreak}{a string (regular expression) replacing a <hr> tag which indicates a thematic change in the content or a page break. #'}
 }
 \value{
-a string containing texts converted from the html document.
+a simple plain text converted from the html document.
 }
 \description{
-Wipe out tags in a html document and return a text in it
+Convert a html document to a simple plain text by removing all html tags
 }
 \examples{
 text = htm2txt("<html><body>html texts</body></html>")
-text = htm2txt(paste(c("<p>html</p>", "texts")))
+text = htm2txt(c("<p>Hello!</p>", "<p>World!</p>"), merge = FALSE)
+text = htm2txt("<li>point1<li>point2<hr>", list = "\\t> ", pagebreak = "\\\\*     \\\\*     \\\\*")
 }

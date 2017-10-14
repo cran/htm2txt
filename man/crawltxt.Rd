@@ -2,19 +2,21 @@
 % Please edit documentation in R/htm2txt.R
 \name{crawltxt}
 \alias{crawltxt}
-\title{Extract a text from a web page at a certain URL}
+\title{Extract a plain text from a web page at a certain URL}
 \usage{
-crawltxt(URL)
+crawltxt(URL, encoding = "UTF-8")
 }
 \arguments{
-\item{URL}{a string containing the URL of a web page}
+\item{URL}{a string indicating the URL of a web page.}
+
+\item{encoding}{a string indicating the encoding method (e.g., "UTF-8", "latin1", "bytes", "unknown", etc.).}
 }
 \value{
-a string containing texts converted from the html document at the URL.
+a string containing a plain text converted from the html document at the URL.
 }
 \description{
-Extract a text from a web page at a certain URL
+Extract a plain text from a web page at a certain URL
 }
 \examples{
-text = crawltxt("https://cran.r-project.org/")
+text = crawltxt("https://CRAN.R-project.org/package=htm2txt")
 }

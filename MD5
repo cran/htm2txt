@@ -1,6 +1,6 @@
-ffb9e7a3e34d296863f7f709770a8fa7 *DESCRIPTION
-fe17c8b569dbbc54c07e6a08c4c56816 *NAMESPACE
-d2f2b4be96e9a4790e655dae602bc7f8 *R/htm2txt.R
-320a182773d43387ad43ebb3270d15c2 *man/crawltxt.Rd
-cdba47fea8ccca38a54c6f54402a2f0b *man/displaytxt.Rd
-abdd0fbed5700dda72b906c76bc94847 *man/htm2txt.Rd
+b2e54692ef7b9122ddc926af54fd0391 *DESCRIPTION
+7b69b54b7f1f7fd08e6f9986a36deb40 *NAMESPACE
+148dde00979705966ba5190dd1df4fd0 *R/htm2txt.R
+6e03b0b8e7e569a5fb5333c49edf9f3a *man/browse.Rd
+04c3eb54898b7b971d01fc99444107db *man/crawltxt.Rd
+f979ef27d7a49fc6c4d08fc6f1618a8f *man/htm2txt.Rd

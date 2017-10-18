@@ -2,20 +2,20 @@
 % Please edit documentation in R/htm2txt.R
 \name{browse}
 \alias{browse}
-\title{Display a plain text in a web page at a certain URL}
+\title{Display plain texts in a web page at a certain URL}
 \usage{
-browse(URL, encoding = "UTF-8")
+browse(URL, ...)
 }
 \arguments{
-\item{URL}{a string containing the URL of a web page.}
+\item{URL}{A character indicating the URL of a web page.}
 
-\item{encoding}{a string indicating the encoding method (e.g., "UTF-8", "latin1", "bytes", "unknown", etc.).}
+\item{...}{Other htm2txt::htm2txt arguments.}
 }
 \value{
 None (invisible NULL).
 }
 \description{
-Display a plain text in a web page at a certain URL
+Display plain texts in a web page at a certain URL
 }
 \examples{
 browse("https://CRAN.R-project.org/package=htm2txt")

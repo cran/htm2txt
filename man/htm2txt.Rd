@@ -2,27 +2,26 @@
 % Please edit documentation in R/htm2txt.R
 \name{htm2txt}
 \alias{htm2txt}
-\title{Convert a html document to a simple plain text by removing all html tags}
+\title{Convert a html document to simple plain texts by removing all html tags}
 \usage{
-htm2txt(htm, merge = TRUE, list = "\\t\\\\* ", pagebreak = "----------")
+htm2txt(htm, list = "\\n&#8226; ", pagebreak = "\\n\\n----------\\n\\n")
 }
 \arguments{
-\item{htm}{one or more R objects containing html tags, to be converted into a simple plain text.}
+\item{htm}{A character vector, containing a html document, to be converted into plain texts (other objects are coerced into character vectors).}
 
-\item{merge}{if TRUE, multiple R objects will be treated like lines in a html document, and will be merged into a string.}
+\item{list}{A character that replaces a <li>...</li> tag (referring to a numbering or bullet for lists).}
 
-\item{list}{a string (regular expression) replacing a <li> tag which indicates a numbering or bullet for lists.}
-
-\item{pagebreak}{a string (regular expression) replacing a <hr> tag which indicates a thematic change in the content or a page break. #'}
+\item{pagebreak}{A character that replaces a <hr> tag (referring to a thematic change in the content or a page break).}
 }
 \value{
-a simple plain text converted from the html document.
+A character vector containing plain texts converted from the html document.
 }
 \description{
-Convert a html document to a simple plain text by removing all html tags
+Convert a html document to simple plain texts by removing all html tags
 }
 \examples{
 text = htm2txt("<html><body>html texts</body></html>")
-text = htm2txt(c("<p>Hello!</p>", "<p>World!</p>"), merge = FALSE)
-text = htm2txt("<li>point1<li>point2<hr>", list = "\\t> ", pagebreak = "\\\\*     \\\\*     \\\\*")
+text = htm2txt(c("Hello<p>World", "Goodbye<br>Friends"))
+text = htm2txt("<p>Menu:</p><ul></li>Coffee</li><li>Tea</li></ul>", list = "\\n- ")
+text = htm2txt("Page 1<hr>Page 2", pagebreak = "\\n\\n[NEW PAGE]\\n\\n")
 }

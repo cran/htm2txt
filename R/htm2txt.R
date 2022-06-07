@@ -1,13 +1,13 @@
 ####################################
-# R htm2txt package Ver 2.1.1      #
+# R htm2txt package Ver 2.2.1      #
 #                 by Sangchul Park #
 ####################################
 
-#' Convert a html document to simple plain texts by removing all html tags
+#' Convert a html document to plain texts by stripping off all html tags
 #'
 #' @param htm A character vector, containing a html document, to be converted into plain texts (other objects are coerced into character vectors).
-#' @param list A character that replaces a <li>...</li> tag (referring to a numbering or bullet for lists).
-#' @param pagebreak A character that replaces a <hr> tag (referring to a thematic change in the content or a page break).
+#' @param list A character that replaces "li" tags (referring to a numbering or bullet for lists). The default is a line change followed by a bullet character and a space.
+#' @param pagebreak A character that replaces "hr" tags (referring to a thematic change in the content or a page break).
 #' @return A character vector containing plain texts converted from the html document.
 #' @examples
 #' text = htm2txt("<html><body>html texts</body></html>")
@@ -16,17 +16,17 @@
 #' text = htm2txt("Page 1<hr>Page 2", pagebreak = "\n\n[NEW PAGE]\n\n")
 #' @export
 htm2txt <- function(htm, list = "\n&#8226; ", pagebreak = "\n\n----------\n\n") {
-
+  
   # function gsubfun: work like gsubfn::gsubfn, but does not damage unicodes
   gsubfun <- function(x, pattern, FUN) {
     match = lapply(regmatches(x, gregexpr(pattern, x)), function(y) if (length(y) == 0) return(y) else return(sapply(y, FUN)))
     nonmatch = regmatches(x, gregexpr(pattern, x), invert = TRUE)
-    return(sapply(seq_along(match), function(i) if (length(match[[i]]) == 0) return(x[i]) else return(paste(append(nonmatch[[i]][1], sapply(seq_along(match[[i]]), function(j) paste(match[[i]][j], nonmatch[[i]][j + 1], sep = ''))), collapse = ''))))
+    return(sapply(seq_along(match), function(i) if (length(.subset2(match, i)) == 0) return(x[i]) else return(paste(append(.subset2(nonmatch, i)[1], sapply(seq_along(.subset2(match, i)), function(j) paste(.subset2(match, i)[j], .subset2(nonmatch, i)[j + 1], sep = ''))), collapse = ''))))
   }
-
+  
   # htm2txt main codes
   htm = as.vector(unlist(htm))
-  htm = gsub('<title( [^>]*)?>(.*?)</title( [^>]*)?>', '', gsub('<!--(.*?)-->', '', gsub('<style( [^>]*)?>(.*?)</style( [^>]*)?>', '', gsub('<script( [^>]*)?>(.*?)</script( [^>]*)?>', '', htm))))
+  htm = gsub('<style( [^>]*)?>(.*?)</style( [^>]*)?>|<script( [^>]*)?>(.*?)</script( [^>]*)?>|<title( [^>]*)?>(.*?)</title( [^>]*)?>|<!--(.*?)-->', '', htm)
   htm = gsub('(</?(p|div|h1|h2|h3|h4|h5|h6|form|ul|ol|dir|dl|table|section|textarea|article|aside|details|blockquote)( [^>]*)?>)+', '\n\n', htm, ignore.case = TRUE)
   htm = gsub('(</?(br|tr|dt|dd|button|label|option|summary|legend)( [^>]*)?>)+', '\n', htm, ignore.case = TRUE)
   htm = gsub('<td( [^>]*)?>', ' ', htm, ignore.case = TRUE)
@@ -53,10 +53,16 @@ htm2txt <- function(htm, list = "\n&#8226; ", pagebreak = "\n\n----------\n\n") 
   hash = new.env()
   sapply(seq_along(entities), function(i) assign(entities[i], unicodes[i], hash))
   remove(entities, unicodes)
+  emojis = '\U1F601|\U1F602|\U1F603|\U1F604|\U1F605|\U1F606|\U1F609|\U1F60A|\U1F60B|\U1F60C|\U1F60D|\U1F60F|\U1F612|\U1F613|\U1F614|\U1F616|\U1F618|\U1F61A|\U1F61C|\U1F61D|\U1F61E|\U1F620|\U1F621|\U1F622|\U1F623|\U1F624|\U1F625|\U1F628|\U1F629|\U1F62A|\U1F62B|\U1F62D|\U1F630|\U1F631|\U1F632|\U1F633|\U1F635|\U1F637|\U1F638|\U1F639|\U1F63A|\U1F63B|\U1F63C|\U1F63D|\U1F63E|\U1F63F|\U1F640|\U1F645|\U1F646|\U1F647|\U1F648|\U1F649|\U1F64A|\U1F64B|\U1F64C|\U1F64D|\U1F64E|\U1F64F|\U2702|\U2705|\U2708|\U2709|\U270A|\U270B|\U270C|\U270F|\U2712|\U2714|\U2716|\U2728|\U2733|\U2734|\U2744|\U2747|\U274C|\U274E|\U2753|\U2754|\U2755|\U2757|\U2764|\U2795|\U2796|\U2797|\U27A1|\U27B0|\U1F680|\U1F683|\U1F684|\U1F685|\U1F687|\U1F689|\U1F68C|\U1F68F|\U1F691|\U1F692|\U1F693|\U1F695|\U1F697|\U1F699|\U1F69A|\U1F6A2|\U1F6A4|\U1F6A5|\U1F6A7|\U1F6A8|\U1F6A9|\U1F6AA|\U1F6AB|\U1F6AC|\U1F6AD|\U1F6B2|\U1F6B6|\U1F6B9|\U1F6BA|\U1F6BB|\U1F6BC|\U1F6BD|\U1F6BE|\U1F6C0|\U24C2|\U1F170|\U1F171|\U1F17E|\U1F17F|\U1F18E|\U1F191|\U1F192|\U1F193|\U1F194|\U1F195|\U1F196|\U1F197|\U1F198|\U1F199|\U1F19A|\U1F1E9 \U1F1EA|\U1F1EC \U1F1E7|\U1F1E8 \U1F1F3|\U1F1EF \U1F1F5|\U1F1EB \U1F1F7|\U1F1F0 \U1F1F7|\U1F1EA \U1F1F8|\U1F1EE \U1F1F9|\U1F1F7 \U1F1FA|\U1F1FA \U1F1F8|\U1F201|\U1F202|\U1F21A|\U1F22F|\U1F232|\U1F233|\U1F234|\U1F235|\U1F236|\U1F237|\U1F238|\U1F239|\U1F23A|\U1F250|\U1F251|\U00A9|\U00AE|\U203C|\U2049|\U0023 \U20E3|\U0038 \U20E3|\U0039 \U20E3|\U0037 \U20E3|\U0030 \U20E3|\U0036 \U20E3|\U0035 \U20E3|\U0034 \U20E3|\U0033 \U20E3|\U0032 \U20E3|\U0031 \U20E3|\U2122|\U2139|\U2194|\U2195|\U2196|\U2197|\U2198|\U2199|\U21A9|\U21AA|\U231A|\U231B|\U23E9|\U23EA|\U23EB|\U23EC|\U23F0|\U23F3|\U25AA|\U25AB|\U25B6|\U25C0|\U25FB|\U25FC|\U25FD|\U25FE|\U2600|\U2601|\U260E|\U2611|\U2614|\U2615|\U261D|\U263A|\U2648|\U2649|\U264A|\U264B|\U264C|\U264D|\U264E|\U264F|\U2650|\U2651|\U2652|\U2653|\U2660|\U2663|\U2665|\U2666|\U2668|\U267B|\U267F|\U2693|\U26A0|\U26A1|\U26AA|\U26AB|\U26BD|\U26BE|\U26C4|\U26C5|\U26CE|\U26D4|\U26EA|\U26F2|\U26F3|\U26F5|\U26FA|\U26FD|\U2934|\U2935|\U2B05|\U2B06|\U2B07|\U2B1B|\U2B1C|\U2B50|\U2B55|\U3030|\U303D|\U3297|\U3299|'
+  emojis = paste0(emojis, '\U1F004|\U1F0CF|\U1F300|\U1F301|\U1F302|\U1F303|\U1F304|\U1F305|\U1F306|\U1F307|\U1F308|\U1F309|\U1F30A|\U1F30B|\U1F30C|\U1F30F|\U1F311|\U1F313|\U1F314|\U1F315|\U1F319|\U1F31B|\U1F31F|\U1F320|\U1F330|\U1F331|\U1F334|\U1F335|\U1F337|\U1F338|\U1F339|\U1F33A|\U1F33B|\U1F33C|\U1F33D|\U1F33E|\U1F33F|\U1F340|\U1F341|\U1F342|\U1F343|\U1F344|\U1F345|\U1F346|\U1F347|\U1F348|\U1F349|\U1F34A|\U1F34C|\U1F34D|\U1F34E|\U1F34F|\U1F351|\U1F352|\U1F353|\U1F354|\U1F355|\U1F356|\U1F357|\U1F358|\U1F359|\U1F35A|\U1F35B|\U1F35C|\U1F35D|\U1F35E|\U1F35F|\U1F360|\U1F361|\U1F362|\U1F363|\U1F364|\U1F365|\U1F366|\U1F367|\U1F368|\U1F369|\U1F36A|\U1F36B|\U1F36C|\U1F36D|\U1F36E|\U1F36F|\U1F370|\U1F371|\U1F372|\U1F373|\U1F374|\U1F375|\U1F376|\U1F377|\U1F378|\U1F379|\U1F37A|\U1F37B|\U1F380|\U1F381|\U1F382|\U1F383|\U1F384|\U1F385|\U1F386|\U1F387|\U1F388|\U1F389|\U1F38A|\U1F38B|\U1F38C|\U1F38D|\U1F38E|\U1F38F|\U1F390|\U1F391|\U1F392|\U1F393|\U1F3A0|\U1F3A1|\U1F3A2|\U1F3A3|\U1F3A4|\U1F3A5|\U1F3A6|\U1F3A7|\U1F3A8|\U1F3A9|\U1F3AA|\U1F3AB|\U1F3AC|\U1F3AD|\U1F3AE|\U1F3AF|\U1F3B0|\U1F3B1|\U1F3B2|\U1F3B3|\U1F3B4|\U1F3B5|\U1F3B6|\U1F3B7|\U1F3B8|\U1F3B9|\U1F3BA|\U1F3BB|\U1F3BC|\U1F3BD|\U1F3BE|\U1F3BF|\U1F3C0|\U1F3C1|\U1F3C2|\U1F3C3|\U1F3C4|\U1F3C6|\U1F3C8|\U1F3CA|\U1F3E0|\U1F3E1|\U1F3E2|\U1F3E3|\U1F3E5|\U1F3E6|\U1F3E7|\U1F3E8|\U1F3E9|\U1F3EA|\U1F3EB|\U1F3EC|\U1F3ED|\U1F3EE|\U1F3EF|\U1F3F0|\U1F40C|\U1F40D|\U1F40E|\U1F411|\U1F412|\U1F414|\U1F417|\U1F418|\U1F419|\U1F41A|\U1F41B|\U1F41C|\U1F41D|\U1F41E|\U1F41F|\U1F420|\U1F421|\U1F422|\U1F423|\U1F424|\U1F425|\U1F426|\U1F427|\U1F428|\U1F429|\U1F42B|\U1F42C|\U1F42D|\U1F42E|\U1F42F|\U1F430|\U1F431|\U1F432|\U1F433|\U1F434|\U1F435|\U1F436|\U1F437|\U1F438|\U1F439|\U1F43A|\U1F43B|\U1F43C|\U1F43D|\U1F43E|\U1F440|\U1F442|\U1F443|\U1F444|\U1F445|\U1F446|\U1F447|\U1F448|\U1F449|\U1F44A|\U1F44B|\U1F44C|\U1F44D|\U1F44E|\U1F44F|\U1F450|\U1F451|\U1F452|\U1F453|\U1F454|\U1F455|\U1F456|\U1F457|\U1F458|\U1F459|\U1F45A|\U1F45B|\U1F45C|\U1F45D|\U1F45E|\U1F45F|\U1F460|\U1F461|\U1F462|\U1F463|\U1F464|\U1F466|\U1F467|\U1F468|\U1F469|\U1F46A|\U1F46B|\U1F46E|\U1F46F|\U1F470|\U1F471|\U1F472|\U1F473|\U1F474|\U1F475|\U1F476|\U1F477|\U1F478|\U1F479|\U1F47A|\U1F47B|\U1F47C|\U1F47D|\U1F47E|\U1F47F|\U1F480|\U1F481|\U1F482|\U1F483|\U1F484|\U1F485|\U1F486|\U1F487|\U1F488|\U1F489|\U1F48A|\U1F48B|\U1F48C|\U1F48D|\U1F48E|\U1F48F|', collapse = NULL)
+  emjois = paste0(emojis, '\U1F490|\U1F491|\U1F492|\U1F493|\U1F494|\U1F495|\U1F496|\U1F497|\U1F498|\U1F499|\U1F49A|\U1F49B|\U1F49C|\U1F49D|\U1F49E|\U1F49F|\U1F4A0|\U1F4A1|\U1F4A2|\U1F4A3|\U1F4A4|\U1F4A5|\U1F4A6|\U1F4A7|\U1F4A8|\U1F4A9|\U1F4AA|\U1F4AB|\U1F4AC|\U1F4AE|\U1F4AF|\U1F4B0|\U1F4B1|\U1F4B2|\U1F4B3|\U1F4B4|\U1F4B5|\U1F4B8|\U1F4B9|\U1F4BA|\U1F4BB|\U1F4BC|\U1F4BD|\U1F4BE|\U1F4BF|\U1F4C0|\U1F4C1|\U1F4C2|\U1F4C3|\U1F4C4|\U1F4C5|\U1F4C6|\U1F4C7|\U1F4C8|\U1F4C9|\U1F4CA|\U1F4CB|\U1F4CC|\U1F4CD|\U1F4CE|\U1F4CF|\U1F4D0|\U1F4D1|\U1F4D2|\U1F4D3|\U1F4D4|\U1F4D5|\U1F4D6|\U1F4D7|\U1F4D8|\U1F4D9|\U1F4DA|\U1F4DB|\U1F4DC|\U1F4DD|\U1F4DE|\U1F4DF|\U1F4E0|\U1F4E1|\U1F4E2|\U1F4E3|\U1F4E4|\U1F4E5|\U1F4E6|\U1F4E7|\U1F4E8|\U1F4E9|\U1F4EA|\U1F4EB|\U1F4EE|\U1F4F0|\U1F4F1|\U1F4F2|\U1F4F3|\U1F4F4|\U1F4F6|\U1F4F7|\U1F4F9|\U1F4FA|\U1F4FB|\U1F4FC|\U1F503|\U1F50A|\U1F50B|\U1F50C|\U1F50D|\U1F50E|\U1F50F|\U1F510|\U1F511|\U1F512|\U1F513|\U1F514|\U1F516|\U1F517|\U1F518|\U1F519|\U1F51A|\U1F51B|\U1F51C|\U1F51D|\U1F51E|\U1F51F|\U1F520|\U1F521|\U1F522|\U1F523|\U1F524|\U1F525|\U1F526|\U1F527|\U1F528|\U1F529|\U1F52A|\U1F52B|\U1F52E|\U1F52F|\U1F530|\U1F531|\U1F532|\U1F533|\U1F534|\U1F535|\U1F536|\U1F537|\U1F538|\U1F539|\U1F53A|\U1F53B|\U1F53C|\U1F53D|\U1F550|\U1F551|\U1F552|\U1F553|\U1F554|\U1F555|\U1F556|\U1F557|\U1F558|\U1F559|\U1F55A|\U1F55B|\U1F5FB|\U1F5FC|\U1F5FD|\U1F5FE|\U1F5FF|\U1F600|\U1F607|\U1F608|\U1F60E|\U1F610|\U1F611|\U1F615|\U1F617|\U1F619|\U1F61B|\U1F61F|\U1F626|\U1F627|\U1F62C|\U1F62E|\U1F62F|\U1F634|\U1F636|\U1F681|\U1F682|\U1F686|\U1F688|\U1F68A|\U1F68D|\U1F68E|\U1F690|\U1F694|\U1F696|\U1F698|\U1F69B|\U1F69C|\U1F69D|\U1F69E|\U1F69F|\U1F6A0|\U1F6A1|\U1F6A3|\U1F6A6|\U1F6AE|\U1F6AF|\U1F6B0|\U1F6B1|\U1F6B3|\U1F6B4|\U1F6B5|\U1F6B7|\U1F6B8|\U1F6BF|\U1F6C1|\U1F6C2|\U1F6C3|\U1F6C4|\U1F6C5|\U1F30D|\U1F30E|\U1F310|\U1F312|\U1F316|\U1F317|\U1F318|\U1F31A|\U1F31C|\U1F31D|\U1F31E|\U1F332|\U1F333|\U1F34B|\U1F350|\U1F37C|\U1F3C7|\U1F3C9|\U1F3E4|\U1F400|\U1F401|\U1F402|\U1F403|\U1F404|\U1F405|\U1F406|\U1F407|\U1F408|\U1F409|\U1F40A|\U1F40B|\U1F40F|\U1F410|\U1F413|\U1F415|\U1F416|\U1F42A|\U1F465|\U1F46C|\U1F46D|\U1F4AD|\U1F4B6|\U1F4B7|\U1F4EC|\U1F4ED|\U1F4EF|\U1F4F5|\U1F500|\U1F501|\U1F502|\U1F504|\U1F505|\U1F506|\U1F507|\U1F509|\U1F515|\U1F52C|\U1F52D|\U1F55C|\U1F55D|\U1F55E|\U1F55F|\U1F560|\U1F561|\U1F562|\U1F563|\U1F564|\U1F565|\U1F566|\U1F567|', collapse = NULL)
+  htm = gsub(emojis, '', htm)
   htm = gsubfun(htm, '&[A-z]+[1-8]*;?', function(x) {
-    for (i in nchar(x):3) {y = substr(x, 1, i); if (exists(y, hash, inherits = FALSE)) return(paste(get(y, hash, inherits = FALSE), substr(x, i + 1, nchar(x)), sep = ''));}
+    n = nchar(x)
+    for (i in n:3) {y = substr(x, 1, i); if (exists(y, hash, inherits = FALSE)) return(paste(get(y, hash, inherits = FALSE), substr(x, i + 1, n), sep = ''));}
     return(x)
   })
+  htm = intToUtf8(utf8ToInt(htm)[-which(utf8ToInt(htm) > 100000)])
   htm = gsubfun(htm, '&#[Xx][[:xdigit:]]+;', function(x) paste('&#', strtoi(substr(x, 4, nchar(x) - 1), base = 16), ';', sep = ''))
   htm = gsubfun(htm, '&#[0-9]+;', function(x) {
     i = as.integer(substr(x, 3, nchar(x) - 1))
@@ -68,22 +74,23 @@ htm2txt <- function(htm, list = "\n&#8226; ", pagebreak = "\n\n----------\n\n") 
   return(htm)
 }
 
-#' Extract plain texts from a web page at a certain URL
+#' Extract simple plain texts from a web page at a certain URL
 #'
 #' @param URL A character indicating the URL of a web page.
 #' @param encoding Encoding method (e.g., "UTF-8", "latin1", "bytes", "unknown", etc.).
-#' @param ... Other htm2txt::htm2txt arguments.
+#' @param ... Other \code{\link{htm2txt}} arguments.
 #' @return A character containing plain texts converted from the htm document at the URL.
 #' @examples
-#' text = gettxt("https://CRAN.R-project.org/package=htm2txt")
+#' text = gettxt("https://www.wikipedia.org/")
 #' @export
 gettxt <- function(URL, encoding = "UTF-8", ...) return(htm2txt(paste(readLines(URL, warn = FALSE, encoding = encoding), sep = '', collapse = ' '), ...))
 
-#' Display plain texts in a web page at a certain URL
+#' Display simple plain texts in a web page at a certain URL
 #'
 #' @param URL A character indicating the URL of a web page.
-#' @param ... Other htm2txt::htm2txt arguments.
+#' @param ... Other \code{\link{gettxt}} arguments.
 #' @return None (invisible NULL).
-#' @examples browse("https://CRAN.R-project.org/package=htm2txt")
+#' @examples browse("https://www.wikipedia.org/")
 #' @export
 browse <- function(URL, ...) cat(gettxt(URL, ...))
+

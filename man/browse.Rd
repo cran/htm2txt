@@ -2,21 +2,21 @@
 % Please edit documentation in R/htm2txt.R
 \name{browse}
 \alias{browse}
-\title{Display plain texts in a web page at a certain URL}
+\title{Display simple plain texts in a web page at a certain URL}
 \usage{
 browse(URL, ...)
 }
 \arguments{
 \item{URL}{A character indicating the URL of a web page.}
 
-\item{...}{Other htm2txt::htm2txt arguments.}
+\item{...}{Other \code{\link{gettxt}} arguments.}
 }
 \value{
 None (invisible NULL).
 }
 \description{
-Display plain texts in a web page at a certain URL
+Display simple plain texts in a web page at a certain URL
 }
 \examples{
-browse("https://CRAN.R-project.org/package=htm2txt")
+browse("https://www.wikipedia.org/")
 }

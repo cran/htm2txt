@@ -2,7 +2,7 @@
 % Please edit documentation in R/htm2txt.R
 \name{gettxt}
 \alias{gettxt}
-\title{Extract plain texts from a web page at a certain URL}
+\title{Extract simple plain texts from a web page at a certain URL}
 \usage{
 gettxt(URL, encoding = "UTF-8", ...)
 }
@@ -11,14 +11,14 @@ gettxt(URL, encoding = "UTF-8", ...)
 
 \item{encoding}{Encoding method (e.g., "UTF-8", "latin1", "bytes", "unknown", etc.).}
 
-\item{...}{Other htm2txt::htm2txt arguments.}
+\item{...}{Other \code{\link{htm2txt}} arguments.}
 }
 \value{
 A character containing plain texts converted from the htm document at the URL.
 }
 \description{
-Extract plain texts from a web page at a certain URL
+Extract simple plain texts from a web page at a certain URL
 }
 \examples{
-text = gettxt("https://CRAN.R-project.org/package=htm2txt")
+text = gettxt("https://www.wikipedia.org/")
 }
